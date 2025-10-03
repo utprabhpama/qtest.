@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Quant Test Generator&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="bg-gray-100 font-sans"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="app" class="max-w-4xl mx-auto p-6"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ================== Utility Functions ==================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function roundTo(n, d = 6) { return Math.round(n * Math.pow(10, d)) / Math.pow(10, d); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function generateChoices(correct) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const base = Number(correct);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const spread = Math.max(1, Math.abs(base) * 0.01);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const wrong1 = roundTo(base + spread * randInt(5, 50));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const wrong2 = roundTo(base - spread * randInt(5, 50));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const opts = [roundTo(base, 6), wrong1, wrong2];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// shuffle</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = opts.length - 1; i &gt; 0; i--) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const j = Math.floor(Math.random() * (i + 1));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>[opts[i], opts[j]] = [opts[j], opts[i]];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return opts;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ================== Question Generators ==================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function generateSection(section, count) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const ops = ["+", "-", "*", "/"];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const qs = [];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt; count; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let a = randInt(1, 999);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let b = randInt(1, 999);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let text, ans;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const op = ops[randInt(0, 3)];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (op === "/" &amp;&amp; b === 0) b = 1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>switch(op) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>case "+": ans = a + b; text = `${a} + ${b}`; break;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>case "-": ans = a - b; text = `${a} - ${b}`; break;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>case "*": ans = a * b; text = `${a} * ${b}`; break;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>case "/": ans = a / b; text = `${a} / ${b}`; break;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (section === 2) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>a = randInt(10, 999)/10; b = randInt(10, 999)/10;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>ans = eval(`${a}${op}${b}`);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>text = `${a} ${op} ${b}`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mcq = Math.random() &lt; 0.2;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>qs.push({</p>
+<p class="p1"><span class="Apple-converted-space">          </span>section, text, answer: roundTo(ans, 6),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>type: mcq ? "mcq" : "numeric",</p>
+<p class="p1"><span class="Apple-converted-space">          </span>choices: mcq ? generateChoices(ans) : null</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return qs;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ================== Scoring ==================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function scoreQuestion(q, resp) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const blank = resp === "" || resp === undefined;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (blank) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 1) return -2;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 2) return -1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 3) return -1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let correct = false;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (q.type === "numeric") {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const val = Number(resp);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>correct = Math.abs(val - q.answer) &lt; 0.001;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>correct = String(resp) === String(q.answer);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (correct) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 1) return 1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 2) return 2;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 3) return 2;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 1) return -3;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 2) return -1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (q.section === 3) return -2;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ================== App ==================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const app = document.getElementById("app");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let questions = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let answers = {};</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let timer, timeLeft = 600;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function startTest() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>questions = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>...generateSection(1, 25),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>...generateSection(2, 25),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>...generateSection(3, 25)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>answers = {};</p>
+<p class="p1"><span class="Apple-converted-space">      </span>timeLeft = 600;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>clearInterval(timer);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>timer = setInterval(updateTimer, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>render();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function submitTest() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>clearInterval(timer);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let score = 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>questions.forEach((q, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>score += scoreQuestion(q, answers[i] || "");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>app.innerHTML = \`</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1 class="text-2xl font-bold mb-4"&gt;Results&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p class="mb-4 text-lg"&gt;Total Score: &lt;b&gt;\${score}&lt;/b&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="startTest()" class="bg-blue-600 text-white px-4 py-2 rounded"&gt;Restart Test&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>\`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateTimer() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>timeLeft--;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (timeLeft &lt;= 0) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>submitTest();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>render();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function render() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>app.innerHTML = \`</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex justify-between mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;h1 class="text-2xl font-bold"&gt;Quant Test&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="text-lg font-mono"&gt;\${Math.floor(timeLeft/60)}:\${String(timeLeft%60).padStart(2,'0')}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="space-y-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>\${questions.map((q, i) =&gt; \`</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="p-3 border rounded bg-white"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div class="text-sm text-gray-600"&gt;Section \${q.section}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div class="font-medium mb-2"&gt;\${i+1}. \${q.text}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>\${q.type === "numeric" ?</p>
+<p class="p1"><span class="Apple-converted-space">                </span>\`&lt;input type="text" class="border p-1" onchange="answers[\${i}]=this.value" /&gt;\` :</p>
+<p class="p1"><span class="Apple-converted-space">                </span>q.choices.map(c =&gt; \`&lt;label class="mr-3"&gt;&lt;input type=radio name=q\${i} value=\${c} onchange=\\\"answers[\${i}]=this.value\\\"&gt; \${c}&lt;/label&gt;\`).join(\" \")</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;\`).join("")}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="mt-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button onclick="submitTest()" class="bg-green-600 text-white px-4 py-2 rounded"&gt;Submit Test&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>\`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>startTest();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
